@@ -1,0 +1,137 @@
+* {
+    font-family: Inconsolata;
+}
+
+
+div#container {
+    display: flex;
+}
+
+div#left_panel {
+    padding-right: 10px;
+    font-family: Inconsolata;
+    z-index: 10;
+    opacity: .8;
+}
+
+div#viz {
+    position: absolute;
+    top: 0;
+    left: 0%;
+}
+
+div#dummy {
+    pointer-events: none;
+}
+
+    #tooltip-Container {
+        position: absolute;
+        width: 300px;
+        font-size: 15px;
+        line-height: 16px;
+        padding: 10px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #000;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(200, 200, 200, 0.85);
+        text-align: center;
+        cursor: default;
+    }
+
+    #tooltip {
+        text-align: center;
+        z-index: 1000;
+        position: absolute;
+        opacity: .9;
+    }
+
+    #tooltip .tooltip-tail {
+        position: absolute;
+        bottom: -8px;
+        left: 105px;
+        width: 40px;
+        height: 8px;
+        background: url(../img/tail_white.png) 50% 0%;
+    }
+
+    #tooltip .tooltip-planet {
+        text-transform: uppercase;
+        font-family: 'Oswald', sans-serif;
+        text-align: left;
+        font-size: 16px;
+        margin-bottom: 4px;
+        color: #333333;
+        text-align: center;
+    }
+
+    #tooltip .tooltip-rule {
+        height: 1px;
+        margin: 1px auto 3px;
+        background: #ddd;
+        width: 130px;
+    }
+
+    #tooltip .tooltip-year {
+        color: #666;
+        font-size: 11px;
+        text-align: center;
+        margin-bottom: 6px;
+        font-style: italic;
+    }
+
+    #tooltip .tooltip-class {
+        color: #333333;
+        text-align: left;
+        font-size: 13px;
+        text-align: center;
+        margin-bottom: 4px;
+    }
+
+    .tooltip-info {
+        color: #333333;
+        font-size: 12px;
+        text-align: center;
+        overflow: hidden;
+        margin-bottom: 2px;
+    }
+
+    .tooltip-tail {
+        position: relative;
+        bottom: -200px;
+        left: 23px;
+        width: 40px;
+        height: 9px;
+        background: url(https://static01.nyt.com/packages/images/newsgraphics/2012/0202-federal-budget/tail_white.png);
+    }
+
+    table.tg {
+        margin: 0 auto;
+    }
+
+    img {
+        height: 4%;
+    }
+
+    i.fab.fa-twitter {
+        color: #1da1f3;
+    }
+
+    i.fab.fa-linkedin {
+        color: #0077b5;
+    }
+
+    i.fa.fa-star {
+        color: #eaea17;
+    }
+
+    i.fa.fa-check {
+        color: #eaea17;
+    }
+
+
+    td.rank {
+        font-family: 'Oswald', sans-serif;
+        font-weight: bold;
+    }
