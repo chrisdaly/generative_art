@@ -11,54 +11,33 @@ class Line {
     this.hadChildren = false;
     this.intersection = null;
     this.id = `${this.x1}_${this.x2}_${this.x2}_${this.y2}`;
-    this.level = level; // console.log(this);
+    this.level = level;
   }
 
   checkIntersections(lines) {
-    // take closest intersection?
-    // only needs to check interesections in one vector direction
     if (this.x2 <= 0 || this.x2 >= canvas.width || this.y2 <= 0 || this.y2 >= canvas.height) {
       this.resolved = true;
       return true;
     }
-    let point = { x: this.x2, y: this.y2 };
+
     lines
-      .filter((d) => d.id !== this.id && d.id !== this.parentId)
+      .filter((d) => d.id !== this.id && d.id !== this.parentId) //&& d.resolved === false
       .forEach((l1) => {
-        // let pointisOnLine = isOnLine(point, l1, 0.05);
-        // if (pointisOnLine === true) {
-        //   console.log("POINT ON LINE", point, l1);
-        // ctx.beginPath();
-        // ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
-        // ctx.stroke();
-        // ctx.fill();
-        //   this.resolved = true;
-        //   return;
-        // }
-
-        let possibleIntersection = intersect(this, l1);
-
-        if (possibleIntersection !== false) {
-          // this.intersection = possibleIntersection;
-
-          if (dist(this.x2, this.y2, possibleIntersection.x, possibleIntersection.y) <= 0.5) {
-            // console.log("SMALL DISTLINE", point, l1);
+        let intersection = intersect(this, l1);
+        if (intersection !== false) {
+          let distanceToIntersection = dist(this.x2, this.y2, intersection.x, intersection.y);
+          if (distanceToIntersection <= step) {
+            // ctx.lineWidth = 1;
             // ctx.beginPath();
-            // ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
+            // ctx.arc(intersection.x, intersection.y, 2, 0, 2 * Math.PI);
             // ctx.stroke();
             this.resolved = true;
           }
-
-          // console.log(possibleIntersection);
-          // ctx.beginPath();
-          // ctx.arc(possibleIntersection.x, possibleIntersection.y, 2, 0, 2 * Math.PI);
-          // ctx.stroke();
         }
       });
   }
 
   increment(step) {
-    // console.log(this.intersection(lines) === true);
     if (this.resolved === true) {
       return;
     } else {
@@ -82,35 +61,9 @@ class Line {
 
 const dist = (x1, y1, x2, y2) => Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 
-function isOnLine(point, line, tolerance) {
-  const a = dist(line.x1, line.y1, point.x, point.y);
-  const b = dist(line.x2, line.y2, point.x, point.y);
-  const c = dist(line.x1, line.y1, line.x2, line.x2);
-
-  return tolerance >= a + b - c && a + b - c >= tolerance * -1;
-}
-
-function isBetween(a, b, c) {
-  epsilon = 0;
-  crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y);
-
-  // compare versus epsilon for floating point values, or != 0 if using integers
-  if (Math.abs(crossproduct) > epsilon) return false;
-
-  dotproduct = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y);
-  if (dotproduct < 0) return false;
-
-  squaredlengthba = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y);
-  if (dotproduct > squaredlengthba) return false;
-
-  return true;
-}
-
-// const checkInterSections = (line, otherLines) => {};
-
 const generateLine = () => {
-  let x1 = Math.floor(Math.random() * canvas.width);
-  let y1 = Math.floor(Math.random() * canvas.height);
+  let x1 = 50 + Math.floor(Math.random() * canvas.width - 50);
+  let y1 = 50 + Math.floor(Math.random() * canvas.height - 50);
   let x2 = x1;
   let y2 = y1;
   let theta = Math.floor(Math.random() * 360) * (Math.PI / 180);
@@ -123,13 +76,12 @@ const generateLine = () => {
 const generateChild = (parent) => {
   let x1 = Math.floor(Math.random() * Math.abs(parent.x1 - parent.x2)) + Math.min(parent.x1, parent.x2);
   imaginaryLine = new Line(x1, 0, x1, canvas.height, 0, 0);
-  // console.log("imaginaryLine", imaginaryLine);
   intersection = intersect(parent, imaginaryLine);
-  // console.log("intersection", intersection);
+
   let y1 = intersection.y;
   let x2 = x1;
   let y2 = y1;
-  var clockWise = Math.random() < 0.5 ? 1 : -1;
+  var clockWise = Math.random() < 0.5 ? 1 : -1; // 1
 
   let theta = parent.theta + clockWise * (90 * (Math.PI / 180));
   let color = parent.color; //"Black"; //colorPicker();
@@ -162,20 +114,24 @@ function intersect(l1, l2) {
   y = y1 + ua * (y2 - y1);
 
   if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) return false;
-
+  if (x < x3 && x < x4) return false;
+  if (x > x3 && x > x4) return false;
+  if (y < y3 && y < y4) return false;
+  if (y > y3 && y > y4) return false;
   return { x, y };
 }
 
-let maxLines = 500;
-let numChildrenToSpawn = 2;
-let maxLevels = 8;
+const maxLines = 500;
+const numChildrenToSpawn = 3;
+const maxLevels = 5;
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-const step = 3;
-const numSeeds = 2;
-const colorPicker = () => d3.rgb(d3.interpolateWarm(Math.random()));
+const step = 1;
+const numSeeds = 3;
+const spacingTolerance = 5;
+const colorPicker = () => d3.rgb(d3.interpolateSinebow(Math.random()));
 
 let lines = Array(numSeeds)
   .fill()
@@ -187,15 +143,17 @@ ctx.lineWidth = 3;
 
 const animate = () => {
   requestAnimationFrame(animate);
+
+  if (lines.length >= maxLines) {
+    // debugger;
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   lines.forEach((p) => {
     p.increment(step);
     p.checkIntersections(lines);
-    // console.log(p);
-    // length = dist(p.x1, p.y1, p.x2, p.y2);
     if ((p.resolved === true) & (p.hadChildren === false) & (p.level < maxLevels)) {
-      if (lines.length < maxLines) {
+      if (lines.length < maxLines && Math.abs(p.x1 - p.x2) >= spacingTolerance) {
         let children = Array(numChildrenToSpawn)
           .fill()
           .map((_, i) => generateChild(p));
@@ -210,6 +168,3 @@ const animate = () => {
 };
 
 requestAnimationFrame(animate);
-
-// TODO
-// filter lines by unresolved / active is a better name
